@@ -2,6 +2,8 @@ import {WebGL} from "./GLContext";
 
 export class ShaderProgram {
     private _program: WebGLProgram | null;
+    private _uniformCash: Map<string,  WebGLUniformLocation> = new Map<string, WebGLUniformLocation>();
+    private _attributeCash: Map<string,  GLint> = new Map<string, GLint>();
 
     constructor(vertexShader: string, fragmentShader: string) {
         const shaderV = <WebGLShader>WebGL.context.createShader(WebGL.context.VERTEX_SHADER);
@@ -42,5 +44,23 @@ export class ShaderProgram {
 
     get():WebGLProgram {
         return <WebGLProgram>this._program;
+    }
+
+    getUniformLocation(name: string): WebGLUniformLocation {
+        let location = this._uniformCash.get(name);
+        if (!location) {
+            location = <WebGLUniformLocation>WebGL.context.getUniformLocation(<WebGLProgram>this._program, name);
+        }
+
+        return location;
+    }
+
+    getAttributeLocation(name: string): GLint {
+        let location = this._attributeCash.get(name);
+        if (!location) {
+            location = <GLint>WebGL.context.getAttribLocation(<WebGLProgram>this._program, name);
+        }
+
+        return location;
     }
 }
