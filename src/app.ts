@@ -89,14 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const PROJMATRIX_SHADOW = Utils.get_projection_ortho(20, 1, 5, 28);
     const LIGHTMATRIX = Utils.lookAtDir(LIGHTDIR, [0, 1, 0], [0, 0, 0]);
 
-
-    /*========================= TEXTURES ========================= */
-   // const cube_texture = await get_texture("resources/dragon.png");
-  //  const floor_texture = await get_texture('resources/granit.jpg');
-
-    /*======================= RENDER TO TEXTURE ======================= */
-
-/*    const fb = WebGL.context.createFramebuffer();
+    const fb = WebGL.context.createFramebuffer();
     WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, fb);
 
     const rb = WebGL.context.createRenderbuffer();
@@ -117,9 +110,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         WebGL.context.TEXTURE_2D, texture_rtt, 0);
 
     WebGL.context.bindTexture(WebGL.context.TEXTURE_2D, null);
-    WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);*/
+    WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
 
-    const dragonModel = new Model(dragon.vertices, dragon.indices, [Texture.from('resources/dragon.png')]);
+    const dragonModel = new Model(dragon.vertices, dragon.indices, [Texture.from('resources/dragon.png'), new Texture(<WebGLTexture>texture_rtt)]);
     const floorModel = new Model(floor_vertices, floor_indices, [Texture.from('resources/granit.jpg')]);
 
 
@@ -141,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         time_old = time;
 
 
- /*       //===================== RENDER THE SHADOW MAP ==========================
+        //===================== RENDER THE SHADOW MAP ==========================
         WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, fb);
         shaderProgramShadow.use();
 
@@ -157,7 +150,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         //==================== RENDER THE SCENE ===========================
         WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
-*/
 
         shaderProgram.use();
 
