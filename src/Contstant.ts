@@ -7,6 +7,7 @@ export const STR = {
     lightDirection : 'source_direction',
     sampler : 'sampler',
     samplerShadowMap : 'samplerShadowMap',
+    skybox: 'skybox',
 
     uv : 'uv',
     position : 'position',
