@@ -1,4 +1,4 @@
-export const STR = {
+export const ShaderVariable = {
     Pmatrix: 'Pmatrix',
     Vmatrix : 'Vmatrix',
     Mmatrix : 'Mmatrix',
@@ -8,8 +8,4 @@ export const STR = {
     sampler : 'sampler',
     samplerShadowMap : 'samplerShadowMap',
     skybox: 'skybox',
-
-    uv : 'uv',
-    position : 'position',
-    normal : 'normal',
 }

@@ -9,6 +9,6 @@ uniform mat4 Vmatrix;
 
 void main()
 {
-    vec4 t = inverse(Pmatrix) * vec4(uv, 1.0);
+    vec4 t = inverse(Pmatrix * Vmatrix) * vec4(uv, 1.0);
     myOtputColor = texture(skybox, normalize(t.xyz / t.w));
 }

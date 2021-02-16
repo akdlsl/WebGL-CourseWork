@@ -1,8 +1,8 @@
 import {ShaderProgram} from "./ShaderProgram";
 import {CubeTexture} from "./Texture";
 import {WebGL} from "./GLContext";
-import {STR} from "./Contstant";
-import {Utils} from "./Utils";
+import {ShaderVariable} from "./Contstant";
+import {Camera} from "./Camera";
 
 const vertices = [-1.0,  1.0, -1.0,
     -1.0, -1.0, -1.0,
@@ -65,20 +65,19 @@ export class Skybox {
         WebGL.context.vertexAttribPointer(0, 3, WebGL.context.FLOAT, false, 3*4, 0);
 
         this._shaderProgramSkybox.use();
-        WebGL.context.uniform1i(this._shaderProgramSkybox.getUniformLocation(STR.skybox), 0);
+        WebGL.context.uniform1i(this._shaderProgramSkybox.getUniformLocation(ShaderVariable.skybox), 0);
         WebGL.context.bindVertexArray(null);
     }
 
-    render(viewMatrix: number[], projectionMatrix: number[]) {
+    render(camera: Camera) {
         this._shaderProgramSkybox.use();
         WebGL.context.depthFunc(WebGL.context.LEQUAL);
         WebGL.context.bindVertexArray(this._arrayBuffer);
 
         WebGL.context.bindTexture(WebGL.context.TEXTURE_CUBE_MAP, this._cubeTexture.get());
 
-        WebGL.context.uniformMatrix4fv(this._shaderProgramSkybox.getUniformLocation(STR.Vmatrix), false, viewMatrix);
-        WebGL.context.uniformMatrix4fv(this._shaderProgramSkybox.getUniformLocation(STR.Pmatrix), false, projectionMatrix);
-
+        WebGL.context.uniformMatrix4fv(this._shaderProgramSkybox.getUniformLocation(ShaderVariable.Vmatrix), false, camera.getView().all());
+        WebGL.context.uniformMatrix4fv(this._shaderProgramSkybox.getUniformLocation(ShaderVariable.Pmatrix), false, camera.getProjection().all());
 
         WebGL.context.drawArrays(WebGL.context.TRIANGLES, 0, vertices.length/3);
         WebGL.context.bindVertexArray(null);

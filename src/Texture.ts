@@ -3,14 +3,10 @@ import {WebGL} from "./GLContext";
 export class Texture {
     protected _texture: WebGLTexture;
 
-    static from(image_URL: string): Texture {
-        const text = this.loadImage(image_URL);
-        return new Texture(<WebGLTexture>text);
-    }
-
-    static loadImage(image_URL: string): WebGLTexture | null {
+    static loadImage(image_URL: string): Texture {
         const image = new Image();
         image.src=image_URL;
+        image.crossOrigin = "anonymous";
 
         let texture = WebGL.context.createTexture();
         image.onload=function(e) {
@@ -23,7 +19,7 @@ export class Texture {
             WebGL.context.bindTexture(WebGL.context.TEXTURE_2D, null);
         }
 
-        return texture;
+        return new Texture(<WebGLTexture>texture);
     };
 
     constructor(texture: WebGLTexture) {
@@ -36,7 +32,7 @@ export class Texture {
 }
 
 export class CubeTexture extends Texture {
-    static loadImageAsCube(faces: {target: GLenum, url: string}[]): WebGLTexture {
+    static loadImageAsCube(faces: {target: GLenum, url: string}[]): CubeTexture {
         let texture = WebGL.context.createTexture();
         WebGL.context.bindTexture(WebGL.context.TEXTURE_CUBE_MAP, texture);
 
@@ -56,8 +52,9 @@ export class CubeTexture extends Texture {
 
             // Asynchronously load an image
             const image = new Image();
-            image.crossOrigin = "anonymous";
             image.src = url;
+            image.crossOrigin = "anonymous";
+
             image.onload = () => {
                 // Now that the image has loaded make copy it to the texture.
                 WebGL.context.bindTexture(WebGL.context.TEXTURE_CUBE_MAP, texture);
@@ -68,8 +65,62 @@ export class CubeTexture extends Texture {
         WebGL.context.generateMipmap(WebGL.context.TEXTURE_CUBE_MAP);
         WebGL.context.texParameteri(WebGL.context.TEXTURE_CUBE_MAP, WebGL.context.TEXTURE_MIN_FILTER, WebGL.context.LINEAR_MIPMAP_LINEAR);
 
-        return <WebGLTexture>texture;
+        return new CubeTexture(<WebGLTexture>texture);
     }
+
+        static officeCubeMapPath = () => [
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_X,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/pos-x.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/neg-x.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/pos-y.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/neg-y.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/pos-z.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+            url: 'https://webglfundamentals.org/webgl/resources/images/computer-history-museum/neg-z.jpg',
+        },
+    ];
+
+      static oceanCubeMapPath = () => [
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_X,
+            url: 'resources/skybox/sb_ocean_right.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            url: 'resources/skybox/sb_ocean_left.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            url: 'resources/skybox/sb_ocean_top.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            url: 'resources/skybox/sb_ocean_bottom.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            url: 'resources/skybox/sb_ocean_front.jpg',
+        },
+        {
+            target: WebGL.context.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+            url: 'resources/skybox/sb_ocean_back.jpg',
+        },
+    ];
 }
 
 export class RenderTexture extends Texture {
@@ -114,3 +165,5 @@ export class RenderTexture extends Texture {
         WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
     }
 }
+
+

@@ -3,10 +3,11 @@ const TSLintPlugin = require('tslint-webpack-plugin');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const miniCss = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
-        main: path.resolve(__dirname, './src/app.ts'),
+        main: path.resolve(__dirname, './src/App.ts'),
     },
     output: {
         filename: 'app.js',
@@ -14,12 +15,19 @@ module.exports = {
     },
     module: {
         rules: [
-            // JavaScript
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: ['ts-loader'],
             },
+            {
+                test:/\.(s*)css$/,
+                use: [
+                    miniCss.loader,
+                    'css-loader',
+                    'sass-loader',
+                ]
+            }
         ],
     },
     resolve: {
@@ -37,8 +45,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'webpack Boilerplate',
-            template: path.resolve(__dirname, './src/index.html'), // шаблон
-            filename: 'index.html', // название выходного файла
+            template: path.resolve(__dirname, './src/Index.html'), // шаблон
+            filename: 'Index.html', // название выходного файла
         }),
         new webpack.HotModuleReplacementPlugin(),
         new TSLintPlugin({
@@ -48,6 +56,9 @@ module.exports = {
             patterns: [
                 { from: './src/resources', to: './resources' }
             ]
+        }),
+        new miniCss({
+            filename: 'style.css',
         })
     ]
 }

@@ -5,7 +5,7 @@ export class Model {
     private _vertexBuffer:  WebGLBuffer | null;
     private _indexBuffer:  WebGLBuffer | null;
     private _arrayBuffer: WebGLVertexArrayObject | null;
-    private _triCount = 0;
+    private _triangleCount = 0;
     private _textures: Texture[];
 
     constructor(vertices: number[], indices: number[], textures: Texture[]) {
@@ -13,7 +13,7 @@ export class Model {
         this._indexBuffer = WebGL.context.createBuffer();
         this._arrayBuffer = WebGL.context.createVertexArray();
         this._textures = textures;
-        this._triCount = indices.length;
+        this._triangleCount = indices.length;
 
         if (!this._vertexBuffer || !this._indexBuffer || !this._arrayBuffer) {
             throw new Error('Failed to create model');
@@ -37,7 +37,8 @@ export class Model {
         WebGL.context.bindVertexArray(null);
     }
 
-    render() {
+    render(func: Function = () => {}) {
+        func();
         this._textures.forEach((text, indx) => {
         // @ts-ignore
         WebGL.context.activeTexture(WebGL.context[`TEXTURE${indx}`]);
@@ -45,7 +46,75 @@ export class Model {
         });
 
         WebGL.context.bindVertexArray(this._arrayBuffer);
-        WebGL.context.drawElements(WebGL.context.TRIANGLES, this._triCount, WebGL.context.UNSIGNED_INT, 0);
+        WebGL.context.drawElements(WebGL.context.TRIANGLES, this._triangleCount, WebGL.context.UNSIGNED_INT, 0);
         WebGL.context.bindVertexArray(null);
+    }
+
+    static createPlane(width: number, texture: Texture): Model {
+        const floor_vertices = [
+            -width, 0, -width, 0, 1, 0, 0, 0, //1st point position,normal and UV
+            -width, 0, width, 0, 1, 0, 0, 1, //2nd point
+            width, 0, width, 0, 1, 0, 1, 1,
+            width, 0, -width, 0, 1, 0, 1, 0
+        ];
+
+        const floor_indices = [0, 1, 2, 0, 2, 3]; // Uint16
+        return new Model(floor_vertices, floor_indices, [texture]);
+    }
+
+    static createCube(width: number, texture: Texture) : Model {
+        const vertices = [
+            -width,-width,width, 0,0,1,   0,0,
+            width,-width,width,  0,0,1,   1,0,
+            width,width,width,  0,0,1,   1,1,
+            -width,width,width, 0,0,1,   0,1,
+
+            -width,-width,-width, 0,0,-1,   0,0,
+            -width,width,-width,  0,0,-1,   1,0,
+            width,width,-width,  0,0,-1,   1,1,
+            width,-width,-width, 0,0,-1,   0,1,
+
+            -width,width,-width, 0,1,0,   0,0,
+            -width,width,width, 0,1,0,   1,0,
+            width,width,width, 0,1,0,   1,1,
+            width,width,-width, 0,1,0,   0,1,
+
+            -width,-width,-width,  0,-1,0,   0,0,
+            width,-width,-width,  0,-1,0,   1,0,
+            width,-width,width,  0,-1,0,   1,1,
+            -width,-width,width,  0,-1,0,   0,1,
+
+            width,-width,-width, 1,0,0,   0,0,
+            width,width,-width, 1,0,0,   1,0,
+            width,width,width,  1,0,0,   1,1,
+            width,-width,width,  1,0,0,   0,1,
+
+            -width,-width,-width, -1,0,0,   0,0,
+            -width,-width,width, -1,0,0,   1,0,
+            -width,width,width,  -1,0,0,   1,1,
+            -width,width,-width  -1,0,0,   0,1
+        ];
+
+        const indices = [
+            0,1,2,
+            0,2,3,
+
+            4,5,6,
+            4,6,7,
+
+            8,9,10,
+            8,10,11,
+
+            12,13,14,
+            12,14,15,
+
+            16,17,18,
+            16,18,19,
+
+            20,21,22,
+            20,22,23
+        ];
+
+        return new Model(vertices, indices, [texture]);
     }
 }
