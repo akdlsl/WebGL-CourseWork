@@ -1,7 +1,6 @@
 # 3D Scene 
 
 This project is my course work for dicipline "Computer Graphic".
-
 To create 3d scene I used typescript and webgl.
 
 There you can see:
